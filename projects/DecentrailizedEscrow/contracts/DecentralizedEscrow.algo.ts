@@ -1,57 +1,122 @@
 import { Contract } from '@algorandfoundation/tealscript';
 
-export class DecentralizedEscrow extends Contract {
+export class EscrowService extends Contract {
+  /** ID of the asset being held in escrow */
+  assetId = GlobalStateKey<AssetID>();
+
+  /** Quantity of the asset to be transferred */
+  quantity = GlobalStateKey<uint64>();
+
+  /** The agreed cost of the asset or service */
+  paymentAmount = GlobalStateKey<uint64>();
+
+  /** Address of the worker (asset receiver) */
+  worker = GlobalStateKey<Address>();
+
+  /** Indicates whether the condition for releasing funds has been met */
+  conditionMet = GlobalStateKey<boolean>();
+
   /**
-   * Calculates the sum of two numbers
+   * Initialize the escrow contract
    *
-   * @param a
-   * @param b
-   * @returns The sum of a and b
+   * @param assetId The asset to be held in escrow
+   * @param quantity The quantity of the asset to transfer
+   * @param paymentAmount The amount the boss has to pay
+   * @param worker The worker who will receive the asset if the condition is met
    */
-  private getSum(a: uint64, b: uint64): uint64 {
-    return a + b;
+  createApplication(assetId: AssetID, quantity: uint64, paymentAmount: uint64, worker: Address): void {
+    this.assetId.value = assetId;
+    this.quantity.value = quantity;
+    this.paymentAmount.value = paymentAmount;
+    this.worker.value = worker;
+    this.conditionMet.value = false;
   }
 
   /**
-   * Calculates the difference between two numbers
+   * Sets the condition to true, allowing funds release, and sends a message to the worker
+   * This can be called by the boss upon confirmation that work is done or the asset has been delivered.
    *
-   * @param a
-   * @param b
-   * @returns The difference between a and b.
+   * @param workerAddress The address of the worker to confirm identity and send a message
    */
-  private getDifference(a: uint64, b: uint64): uint64 {
-    return a >= b ? a - b : b - a;
+  setConditionMet(workerAddress: Address): void {
+    assert(this.txn.sender === this.app.creator); // Only the boss can set the condition
+    assert(workerAddress === this.worker.value); // Ensure the input worker address matches the stored address
+
+    // Set the condition to true
+    this.conditionMet.value = true;
+  }
+  /**
+   * Opt the contract address into the asset being held in escrow.
+   * This allows the contract to hold the asset securely.
+   *
+   * @param mbrTxn The payment transaction that covers the Minimum Balance Requirement (MBR) for opting into the asset.
+   */
+
+  optInToAsset(mbrTxn: PayTxn): void {
+    // Ensure only the contract creator (boss) can opt into the asset
+    assert(this.txn.sender === this.app.creator);
+
+    // Verify the contract has not already opted into the asset
+    assert(!this.app.address.isOptedInToAsset(this.assetId.value));
+
+    // Check that the MBR transaction provides the necessary funds for opting in
+    verifyPayTxn(mbrTxn, {
+      receiver: this.app.address,
+      amount: globals.minBalance + globals.assetOptInMinBalance, // Ensure the correct amount for MBR
+    });
+
+    // Execute the opt-in transaction for the asset
+    sendAssetTransfer({
+      xferAsset: this.assetId.value,
+      assetAmount: 0, // Opt-in transaction (no actual transfer of asset units)
+      assetReceiver: this.app.address,
+    });
+  }
+  /**
+   * Transfer funds from escrow to worker if the condition is met
+   *
+   * @param workerPaymentTxn The payment transaction from the boss to the contract
+   */
+
+  releaseFunds(workerPaymentTxn: PayTxn): void {
+    assert(this.conditionMet.value); // Check if the condition is met
+
+    verifyPayTxn(workerPaymentTxn, {
+      receiver: this.app.address,
+      amount: this.paymentAmount.value,
+    });
+
+    sendAssetTransfer({
+      xferAsset: this.assetId.value,
+      assetAmount: this.quantity.value,
+      assetReceiver: this.worker.value,
+    });
+
+    sendPayment({
+      receiver: this.app.creator,
+      amount: this.app.address.balance,
+      closeRemainderTo: this.app.creator, // Return remaining balance to the boss
+    });
   }
 
   /**
-   * A method that takes two numbers and does either addition or subtraction
-   *
-   * @param a The first uint64
-   * @param b The second uint64
-   * @param operation The operation to perform. Can be either 'sum' or 'difference'
-   *
-   * @returns The result of the operation
+   * Method to cancel the escrow and delete the application
+   * Returns any remaining funds or assets to the boss
    */
-  doMath(a: uint64, b: uint64, operation: string): uint64 {
-    let result: uint64;
+  deleteEscrow(): void {
+    assert(this.txn.sender === this.app.creator); // Only the boss can delete the contract
 
-    if (operation === 'sum') {
-      result = this.getSum(a, b);
-    } else if (operation === 'difference') {
-      result = this.getDifference(a, b);
-    } else throw Error('Invalid operation');
+    sendAssetTransfer({
+      xferAsset: this.assetId.value,
+      assetReceiver: this.app.creator,
+      assetAmount: this.app.address.assetBalance(this.assetId.value),
+      assetCloseTo: this.app.creator,
+    });
 
-    return result;
-  }
-
-  /**
-   * A demonstration method used in the AlgoKit fullstack template.
-   * Greets the user by name.
-   *
-   * @param name The name of the user to greet.
-   * @returns A greeting message to the user.
-   */
-  hello(name: string): string {
-    return 'Hello, ' + name;
+    sendPayment({
+      receiver: this.app.creator,
+      amount: this.app.address.balance,
+      closeRemainderTo: this.app.creator,
+    });
   }
 }
