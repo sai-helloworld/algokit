@@ -33,16 +33,10 @@
     },
     {
       "name": "setConditionMet",
-      "desc": "Sets the condition to true, allowing funds release, and sends a message to the worker\nThis can be called by the boss upon confirmation that work is done or the asset has been delivered.",
-      "args": [
-        {
-          "name": "workerAddress",
-          "type": "address",
-          "desc": "The address of the worker to confirm identity and send a message"
-        }
-      ],
+      "desc": "Sets the condition to true, allowing funds release, and sends a message to the worker\nThis can be called by the boss upon confirmation that work is done or the asset has been delivered.\n\n\nThe address of the worker to confirm identity and send a message",
+      "args": [],
       "returns": {
-        "type": "void"
+        "type": "bool"
       }
     },
     {

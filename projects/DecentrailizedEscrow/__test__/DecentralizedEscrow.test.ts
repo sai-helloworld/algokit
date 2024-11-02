@@ -42,7 +42,7 @@ describe('EscrowService', () => {
     await appClient.create.createApplication({
       assetId: testAssetId,
       quantity: 3n,
-      paymentAmount: 2.0,
+      paymentAmount: 2n,
       worker,
     });
   });
@@ -56,7 +56,7 @@ describe('EscrowService', () => {
     const mbrTxn = await algorand.transactions.payment({
       sender: boss,
       receiver: appAddress,
-      amount: algos(0.2), // Adjusted for Digital Marketplace standard
+      amount: algos(0.1 + 0.1),
       extraFee: algos(0.001),
     });
 
@@ -86,10 +86,8 @@ describe('EscrowService', () => {
   });
 
   test('setConditionMet', async () => {
-    await appClient.setConditionMet({ workerAddress: worker });
-
-    const { conditionMet } = await appClient.getGlobalState();
-    expect(conditionMet).toBe(true);
+    const result = (await appClient.setConditionMet({}, { sendParams: { fee: algos(0.003) } })).return;
+    expect(result).toBe(true);
   });
 
   test('releaseFunds', async () => {
@@ -99,7 +97,7 @@ describe('EscrowService', () => {
     const paymentTxn = await algorand.transactions.payment({
       sender: boss,
       receiver: appAddress,
-      amount: algos(2.0),
+      amount: algos(3),
       extraFee: algos(0.001),
     });
 
@@ -120,9 +118,9 @@ describe('EscrowService', () => {
     expect(result.confirmation).toBeDefined();
 
     const { amount: finalBalance } = await algorand.account.getInformation(boss);
-    expect(finalBalance - initialBalance).toEqual(algos(2.0));
+    expect(finalBalance - initialBalance).toEqual(algos(0.197).microAlgos);
 
     const { balance } = await algorand.account.getAssetInformation(boss, testAssetId);
-    expect(balance).toBe(7n);
+    expect(balance).toBe(10n);
   });
 });

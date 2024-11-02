@@ -36,14 +36,12 @@ export class EscrowService extends Contract {
    * Sets the condition to true, allowing funds release, and sends a message to the worker
    * This can be called by the boss upon confirmation that work is done or the asset has been delivered.
    *
-   * @param workerAddress The address of the worker to confirm identity and send a message
+   * The address of the worker to confirm identity and send a message
    */
-  setConditionMet(workerAddress: Address): void {
+  setConditionMet(): boolean {
     assert(this.txn.sender === this.app.creator); // Only the boss can set the condition
-    assert(workerAddress === this.worker.value); // Ensure the input worker address matches the stored address
-
-    // Set the condition to true
     this.conditionMet.value = true;
+    return true;
   }
   /**
    * Opt the contract address into the asset being held in escrow.
