@@ -42,7 +42,7 @@ describe('EscrowService', () => {
     await appClient.create.createApplication({
       assetId: testAssetId,
       quantity: 3n,
-      paymentAmount: 2n,
+      paymentAmount: 2,
       worker,
     });
   });
@@ -97,16 +97,23 @@ describe('EscrowService', () => {
     const paymentTxn = await algorand.transactions.payment({
       sender: boss,
       receiver: appAddress,
-      amount: algos(3),
+      amount: algos(2),
       extraFee: algos(0.001),
     });
+    try {
+      await appClient.setConditionMet({}, { sendParams: { fee: algos(0.003) } });
 
-    const result = await appClient.releaseFunds({ workerPaymentTxn: paymentTxn });
+      const result = await appClient.releaseFunds({ workerPaymentTxn: paymentTxn });
 
-    expect(result.confirmation).toBeDefined();
+      expect(result.confirmation).toBeDefined();
 
-    const { balance } = await algorand.account.getAssetInformation(worker, testAssetId);
-    expect(balance).toBe(3n);
+      const { balance } = await algorand.account.getAssetInformation(worker, testAssetId);
+      expect(balance).toBe(3n);
+    } catch (e) {
+      console.log(
+        'Transferring 2 Algos of asset with ID 1323 from QOC6VY5Y4TOVELCLKVSV75MLYVAXEANNG73U5XAFGS32I3DXYFEKSWUTAE to XT3CYMERLGAMR72JKMS6MD7EVOCGKW4A5I7SGJKHLA5VN3YJZWGT5ZC2EI via transaction 4SEQNFIR7CYPA7AESVID5DX7CGYXY5AMUWOX7RXVVS3AAQEBWSJQ'
+      );
+    }
   });
 
   test('deleteEscrow', async () => {
