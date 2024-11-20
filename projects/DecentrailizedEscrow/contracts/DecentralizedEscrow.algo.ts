@@ -13,7 +13,7 @@ export class EscrowService extends Contract {
   /**
    * Initialize the escrow contract
    *
-   * @param worker The worker who will receive the asset if the condition is met
+   * @param worker The worker who will receive the funds
    */
   createApplication(worker: Address): void {
     this.paymentAmount.value = 0;
