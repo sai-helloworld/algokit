@@ -14,7 +14,7 @@
         {
           "name": "adminAddress",
           "type": "address",
-          "desc": "The address of the admin"
+          "desc": "The address of the adminfunds"
         }
       ],
       "returns": {

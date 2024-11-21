@@ -15,12 +15,9 @@ export class EscrowService extends Contract {
   /**
    * Initialize the escrow contract
    *
-<<<<<<< HEAD
+
    * @param worker The worker who will receive the asset if the condition is met
-   * @param adminAddress The address of the admin
-=======
-   * @param worker The worker who will receive the funds
->>>>>>> 1aacbd599406dcc7dcb3a2d563bdcec18fefdf31
+   * @param adminAddress The address of the adminfunds
    */
   createApplication(worker: Address, adminAddress: Address): void {
     this.paymentAmount.value = 0;
@@ -54,13 +51,16 @@ export class EscrowService extends Contract {
   }
 
   releaseFunds(): void {
-    assert(this.txn.sender === this.app.creator || this.txn.sender === this.admin.value);
+    assert(
+      this.txn.sender === this.app.creator ||
+        this.txn.sender === this.admin.value ||
+        this.txn.sender === this.worker.value
+    );
     assert(this.conditionMet.value); // Check if the condition is met
 
     sendPayment({
       receiver: this.worker.value,
       amount: this.paymentAmount.value,
-      closeRemainderTo: this.app.creator, // Return remaining balance to the boss
     });
     this.paymentAmount.value = 0;
   }

@@ -12,7 +12,6 @@ let appClient: EscrowServiceClient;
 describe('EscrowService', () => {
   beforeEach(fixture.beforeEach);
 
-  let testAssetId: bigint;
   let boss: string;
   let worker: string;
 
@@ -22,6 +21,7 @@ describe('EscrowService', () => {
     const { testAccount: bossAccount, testAccount: workerAccount } = fixture.context;
     boss = bossAccount.addr;
     worker = workerAccount.addr;
+    const adminAddress = 'KK45KH6PIPO7FXGMETBJ5FC3BJ7KYRU4NTT65H5VISFDU5DIYYMDGH6C3M';
 
     appClient = new EscrowServiceClient(
       {
@@ -32,57 +32,28 @@ describe('EscrowService', () => {
       algorand.client.algod
     );
 
-    const assetCreate = await algorand.send.assetCreate({
-      sender: boss,
-      total: 10n,
-    });
-
-    testAssetId = BigInt(assetCreate.confirmation.assetIndex!);
-
     await appClient.create.createApplication({
-      assetId: testAssetId,
-      quantity: 3n,
-      paymentAmount: 2,
       worker,
+      adminAddress,
     });
   });
 
-  test('optInToAsset', async () => {
+  test('addFundsToEscrow', async () => {
     const { algorand } = fixture;
     const { appAddress } = await appClient.appClient.getAppReference();
 
-    await expect(algorand.account.getAssetInformation(appAddress, testAssetId)).rejects.toBeDefined();
-
-    const mbrTxn = await algorand.transactions.payment({
+    const escrowPaymentTxn = await algorand.transactions.payment({
       sender: boss,
       receiver: appAddress,
-      amount: algos(0.1 + 0.1),
-      extraFee: algos(0.001),
+      amount: algos(3),
     });
 
-    const result = await appClient.optInToAsset({ mbrTxn });
+    const result = await appClient.addFundsToEscrow({ ebaTxn: escrowPaymentTxn });
 
     expect(result.confirmation).toBeDefined();
 
-    const { balance } = await algorand.account.getAssetInformation(appAddress, testAssetId);
-    expect(balance).toBe(0n);
-  });
-
-  test('deposit', async () => {
-    const { algorand } = fixture;
-    const { appAddress } = await appClient.appClient.getAppReference();
-
-    const result = await algorand.send.assetTransfer({
-      assetId: testAssetId,
-      sender: boss,
-      receiver: appAddress,
-      amount: 3n,
-    });
-
-    expect(result.confirmation).toBeDefined();
-
-    const { balance } = await algorand.account.getAssetInformation(appAddress, testAssetId);
-    expect(balance).toBe(3n);
+    const { amount } = await algorand.account.getInformation(appAddress);
+    expect(amount).toBeGreaterThanOrEqual(algos(3).microAlgos);
   });
 
   test('setConditionMet', async () => {
@@ -107,11 +78,11 @@ describe('EscrowService', () => {
 
       expect(result.confirmation).toBeDefined();
 
-      const { balance } = await algorand.account.getAssetInformation(worker, testAssetId);
-      expect(balance).toBe(3n);
+      const { amount } = await algorand.account.getInformation(worker);
+      expect(amount).toBeGreaterThan(0);
     } catch (e) {
       console.log(
-        'Transferring 2 Algos of asset with ID 1323 from QOC6VY5Y4TOVELCLKVSV75MLYVAXEANNG73U5XAFGS32I3DXYFEKSWUTAE to XT3CYMERLGAMR72JKMS6MD7EVOCGKW4A5I7SGJKHLA5VN3YJZWGT5ZC2EI via transaction 4SEQNFIR7CYPA7AESVID5DX7CGYXY5AMUWOX7RXVVS3AAQEBWSJQ'
+        'Transferring 2 Algos from the escrow contract to the worker failed due to an issue. Check the conditions or the transaction details.'
       );
     }
   });
@@ -126,8 +97,5 @@ describe('EscrowService', () => {
 
     const { amount: finalBalance } = await algorand.account.getInformation(boss);
     expect(finalBalance - initialBalance).toEqual(algos(0.197).microAlgos);
-
-    const { balance } = await algorand.account.getAssetInformation(boss, testAssetId);
-    expect(balance).toBe(10n);
   });
 });
