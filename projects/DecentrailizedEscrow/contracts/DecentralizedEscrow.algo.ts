@@ -10,15 +10,19 @@ export class EscrowService extends Contract {
   /** Indicates whether the condition for releasing funds has been met */
   conditionMet = GlobalStateKey<boolean>();
 
+  admin = GlobalStateKey<Address>();
+
   /**
    * Initialize the escrow contract
    *
    * @param worker The worker who will receive the asset if the condition is met
+   * @param adminAddress The address of the admin
    */
-  createApplication(worker: Address): void {
+  createApplication(worker: Address, adminAddress: Address): void {
     this.paymentAmount.value = 0;
     this.worker.value = worker;
     this.conditionMet.value = false;
+    this.admin.value = adminAddress;
   }
 
   /**
@@ -28,7 +32,7 @@ export class EscrowService extends Contract {
    * The address of the worker to confirm identity and send a message
    */
   setConditionMet(): boolean {
-    assert(this.txn.sender === this.app.creator); // Only the boss can set the condition
+    assert(this.txn.sender === this.app.creator || this.txn.sender === this.admin.value); // Only the boss can set the condition
     this.conditionMet.value = true;
     return true;
   }
@@ -46,7 +50,7 @@ export class EscrowService extends Contract {
   }
 
   releaseFunds(): void {
-    assert(this.txn.sender === this.app.creator);
+    assert(this.txn.sender === this.app.creator || this.txn.sender === this.admin.value);
     assert(this.conditionMet.value); // Check if the condition is met
 
     sendPayment({
