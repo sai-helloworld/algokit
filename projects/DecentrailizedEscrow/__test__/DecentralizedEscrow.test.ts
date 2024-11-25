@@ -63,39 +63,27 @@ describe('EscrowService', () => {
 
   test('releaseFunds', async () => {
     const { algorand } = fixture;
-    const { appAddress } = await appClient.appClient.getAppReference();
 
-    const paymentTxn = await algorand.transactions.payment({
-      sender: boss,
-      receiver: appAddress,
-      amount: algos(2),
-      extraFee: algos(0.001),
-    });
-    try {
-      await appClient.setConditionMet({}, { sendParams: { fee: algos(0.003) } });
+    await appClient.setConditionMet({});
 
-      const result = await appClient.releaseFunds({ workerPaymentTxn: paymentTxn });
+    const result = await appClient.releaseFunds({}, { sendParams: { fee: algos(0.002) } });
 
-      expect(result.confirmation).toBeDefined();
+    expect(result.confirmation).toBeDefined();
 
-      const { amount } = await algorand.account.getInformation(worker);
-      expect(amount).toBeGreaterThan(0);
-    } catch (e) {
-      console.log(
-        'Transferring 2 Algos from the escrow contract to the worker failed due to an issue. Check the conditions or the transaction details.'
-      );
-    }
+    const { amount } = await algorand.account.getInformation(worker);
+    expect(amount).toBeGreaterThan(0);
   });
 
   test('deleteEscrow', async () => {
     const { algorand } = fixture;
     const { amount: initialBalance } = await algorand.account.getInformation(boss);
 
-    const result = await appClient.deleteEscrow({}, { sendParams: { fee: algos(0.003) } });
+    const result = await appClient.deleteEscrow({}, { sendParams: { fee: algos(0.002) } });
 
     expect(result.confirmation).toBeDefined();
 
     const { amount: finalBalance } = await algorand.account.getInformation(boss);
-    expect(finalBalance - initialBalance).toEqual(algos(0.197).microAlgos);
+
+    expect(finalBalance - initialBalance).toEqual(-algos(0.002).microAlgos);
   });
 });

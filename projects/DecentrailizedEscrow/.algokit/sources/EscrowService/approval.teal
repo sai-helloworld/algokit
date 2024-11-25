@@ -55,25 +55,26 @@ switch *call_NoOp *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEM
 //
 // Initialize the escrow contract
 //
-//
 // @param worker The worker who will receive the asset if the condition is met
 // @param adminAddress The address of the adminfunds
+// @param worker The worker who will receive the asset if the condition is met
+// @param adminAddress The address of the admin
 createApplication:
 	proto 2 0
 
-	// contracts\DecentralizedEscrow.algo.ts:23
+	// contracts\DecentralizedEscrow.algo.ts:24
 	// this.paymentAmount.value = 0
 	bytec 0 //  "paymentAmount"
 	intc 1 // 0
 	app_global_put
 
-	// contracts\DecentralizedEscrow.algo.ts:24
+	// contracts\DecentralizedEscrow.algo.ts:25
 	// this.worker.value = worker
 	bytec 2 //  "worker"
 	frame_dig -1 // worker: Address
 	app_global_put
 
-	// contracts\DecentralizedEscrow.algo.ts:25
+	// contracts\DecentralizedEscrow.algo.ts:26
 	// this.conditionMet.value = false
 	bytec 1 //  "conditionMet"
 	intc 1 // 0
@@ -83,7 +84,7 @@ createApplication:
 	setbit
 	app_global_put
 
-	// contracts\DecentralizedEscrow.algo.ts:26
+	// contracts\DecentralizedEscrow.algo.ts:27
 	// this.admin.value = adminAddress
 	bytec 3 //  "admin"
 	frame_dig -2 // adminAddress: Address
@@ -115,7 +116,7 @@ createApplication:
 setConditionMet:
 	proto 0 1
 
-	// contracts\DecentralizedEscrow.algo.ts:36
+	// contracts\DecentralizedEscrow.algo.ts:37
 	// assert(this.txn.sender === this.app.creator || this.txn.sender === this.admin.value)
 	txn Sender
 	txna Applications 0
@@ -133,7 +134,7 @@ setConditionMet:
 *skip_or0:
 	assert
 
-	// contracts\DecentralizedEscrow.algo.ts:37
+	// contracts\DecentralizedEscrow.algo.ts:38
 	// this.conditionMet.value = true
 	bytec 1 //  "conditionMet"
 	intc 0 // 1
@@ -143,7 +144,7 @@ setConditionMet:
 	setbit
 	app_global_put
 
-	// contracts\DecentralizedEscrow.algo.ts:38
+	// contracts\DecentralizedEscrow.algo.ts:39
 	// return true;
 	intc 0 // 1
 	retsub
@@ -173,7 +174,7 @@ setConditionMet:
 addFundsToEscrow:
 	proto 1 0
 
-	// contracts\DecentralizedEscrow.algo.ts:44
+	// contracts\DecentralizedEscrow.algo.ts:45
 	// assert(this.txn.sender === this.app.creator)
 	txn Sender
 	txna Applications 0
@@ -182,7 +183,7 @@ addFundsToEscrow:
 	==
 	assert
 
-	// contracts\DecentralizedEscrow.algo.ts:46
+	// contracts\DecentralizedEscrow.algo.ts:47
 	// verifyPayTxn(ebaTxn, {
 	//       receiver: this.app.address,
 	//     })
@@ -195,7 +196,7 @@ addFundsToEscrow:
 	// transaction verification failed: {"txn":"ebaTxn","field":"receiver","expected":"this.app.address"}
 	assert
 
-	// contracts\DecentralizedEscrow.algo.ts:50
+	// contracts\DecentralizedEscrow.algo.ts:51
 	// this.paymentAmount.value = ebaTxn.amount
 	bytec 0 //  "paymentAmount"
 	frame_dig -1 // ebaTxn: PayTxn
@@ -214,7 +215,7 @@ addFundsToEscrow:
 releaseFunds:
 	proto 0 0
 
-	// contracts\DecentralizedEscrow.algo.ts:54
+	// contracts\DecentralizedEscrow.algo.ts:55
 	// assert(
 	//       this.txn.sender === this.app.creator ||
 	//         this.txn.sender === this.admin.value ||
@@ -245,7 +246,7 @@ releaseFunds:
 *skip_or2:
 	assert
 
-	// contracts\DecentralizedEscrow.algo.ts:59
+	// contracts\DecentralizedEscrow.algo.ts:60
 	// assert(this.conditionMet.value)
 	bytec 1 //  "conditionMet"
 	app_global_get
@@ -253,7 +254,7 @@ releaseFunds:
 	getbit
 	assert
 
-	// contracts\DecentralizedEscrow.algo.ts:61
+	// contracts\DecentralizedEscrow.algo.ts:62
 	// sendPayment({
 	//       receiver: this.worker.value,
 	//       amount: this.paymentAmount.value,
@@ -262,13 +263,13 @@ releaseFunds:
 	intc 0 //  pay
 	itxn_field TypeEnum
 
-	// contracts\DecentralizedEscrow.algo.ts:62
+	// contracts\DecentralizedEscrow.algo.ts:63
 	// receiver: this.worker.value
 	bytec 2 //  "worker"
 	app_global_get
 	itxn_field Receiver
 
-	// contracts\DecentralizedEscrow.algo.ts:63
+	// contracts\DecentralizedEscrow.algo.ts:64
 	// amount: this.paymentAmount.value
 	bytec 0 //  "paymentAmount"
 	app_global_get
@@ -281,7 +282,7 @@ releaseFunds:
 	// Submit inner transaction
 	itxn_submit
 
-	// contracts\DecentralizedEscrow.algo.ts:65
+	// contracts\DecentralizedEscrow.algo.ts:66
 	// this.paymentAmount.value = 0
 	bytec 0 //  "paymentAmount"
 	intc 1 // 0
@@ -302,7 +303,7 @@ releaseFunds:
 deleteEscrow:
 	proto 0 0
 
-	// contracts\DecentralizedEscrow.algo.ts:73
+	// contracts\DecentralizedEscrow.algo.ts:74
 	// assert(this.txn.sender === this.app.creator)
 	txn Sender
 	txna Applications 0
@@ -311,7 +312,7 @@ deleteEscrow:
 	==
 	assert
 
-	// contracts\DecentralizedEscrow.algo.ts:75
+	// contracts\DecentralizedEscrow.algo.ts:76
 	// sendPayment({
 	//       receiver: this.app.creator,
 	//       amount: this.paymentAmount.value,
@@ -321,20 +322,20 @@ deleteEscrow:
 	intc 0 //  pay
 	itxn_field TypeEnum
 
-	// contracts\DecentralizedEscrow.algo.ts:76
+	// contracts\DecentralizedEscrow.algo.ts:77
 	// receiver: this.app.creator
 	txna Applications 0
 	app_params_get AppCreator
 	pop
 	itxn_field Receiver
 
-	// contracts\DecentralizedEscrow.algo.ts:77
+	// contracts\DecentralizedEscrow.algo.ts:78
 	// amount: this.paymentAmount.value
 	bytec 0 //  "paymentAmount"
 	app_global_get
 	itxn_field Amount
 
-	// contracts\DecentralizedEscrow.algo.ts:78
+	// contracts\DecentralizedEscrow.algo.ts:79
 	// closeRemainderTo: this.app.creator
 	txna Applications 0
 	app_params_get AppCreator
@@ -348,7 +349,7 @@ deleteEscrow:
 	// Submit inner transaction
 	itxn_submit
 
-	// contracts\DecentralizedEscrow.algo.ts:80
+	// contracts\DecentralizedEscrow.algo.ts:81
 	// this.paymentAmount.value = 0
 	bytec 0 //  "paymentAmount"
 	intc 1 // 0
