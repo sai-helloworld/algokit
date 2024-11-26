@@ -50,7 +50,7 @@
       }
     },
     {
-      "name": "deleteEscrow",
+      "name": "deleteApplication",
       "desc": "Method to cancel the escrow and delete the application\nReturns any remaining funds or assets to the boss",
       "args": [],
       "returns": {

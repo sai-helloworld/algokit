@@ -1511,43 +1511,68 @@
     "pc": [
       372,
       373,
-      374,
-      375,
-      376,
-      377
+      374
     ]
   },
   {
     "teal": 372,
     "source": "contracts\\DecentralizedEscrow.algo.ts:3",
     "pc": [
+      375,
+      376,
+      377,
       378,
       379,
-      380
+      380,
+      381,
+      382
     ]
   },
   {
-    "teal": 373,
+    "teal": 375,
+    "source": "contracts\\DecentralizedEscrow.algo.ts:3",
+    "errorMessage": "this contract does not implement the given ABI method for call NoOp",
+    "pc": [
+      383
+    ]
+  },
+  {
+    "teal": 378,
     "source": "contracts\\DecentralizedEscrow.algo.ts:3",
     "pc": [
-      381,
-      382,
-      383,
       384,
       385,
       386,
       387,
       388,
-      389,
-      390
+      389
     ]
   },
   {
-    "teal": 376,
+    "teal": 379,
     "source": "contracts\\DecentralizedEscrow.algo.ts:3",
-    "errorMessage": "this contract does not implement the given ABI method for call NoOp",
     "pc": [
-      391
+      390,
+      391,
+      392
+    ]
+  },
+  {
+    "teal": 380,
+    "source": "contracts\\DecentralizedEscrow.algo.ts:3",
+    "pc": [
+      393,
+      394,
+      395,
+      396
+    ]
+  },
+  {
+    "teal": 383,
+    "source": "contracts\\DecentralizedEscrow.algo.ts:3",
+    "errorMessage": "this contract does not implement the given ABI method for call DeleteApplication",
+    "pc": [
+      397
     ]
   }
 ]

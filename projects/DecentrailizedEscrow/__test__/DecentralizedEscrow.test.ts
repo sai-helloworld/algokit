@@ -78,7 +78,7 @@ describe('EscrowService', () => {
     const { algorand } = fixture;
     const { amount: initialBalance } = await algorand.account.getInformation(boss);
 
-    const result = await appClient.deleteEscrow({}, { sendParams: { fee: algos(0.002) } });
+    const result = await appClient.delete.deleteApplication({}, { sendParams: { fee: algos(0.002) } });
 
     expect(result.confirmation).toBeDefined();
 

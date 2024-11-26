@@ -70,7 +70,7 @@ export class EscrowService extends Contract {
    * Method to cancel the escrow and delete the application
    * Returns any remaining funds or assets to the boss
    */
-  deleteEscrow(): void {
+  deleteApplication(): void {
     assert(this.txn.sender === this.app.creator); // Only the boss can delete the contract
 
     sendPayment({
