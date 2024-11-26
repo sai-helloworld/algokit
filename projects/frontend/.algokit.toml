@@ -10,8 +10,3 @@ artifacts = "src/contracts"
 build = { commands = ['npm run build'], description = 'Build frontend' }
 test = { commands = ['npm run test'], description = 'Run frontend tests' }
 lint = { commands = ['npm run lint'], description = 'Lint frontend code' }
-ci-deploy-netlify = { commands = [
-    'npm install --global netlify-cli@latest',
-    'netlify login',
-    'netlify deploy --build --prod'
-  ], description = 'Deploy to Netlify' }
