@@ -1,1 +1,6 @@
-{}
+{
+  "dependencies": {
+    "@txnlab/use-wallet-react": "^3.10.1",
+    "magic-sdk": "^28.19.0"
+  }
+}
