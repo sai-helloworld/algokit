@@ -15,6 +15,7 @@ export const EscrowList: React.FC<EscrowListProps> = ({ user, onShowDetails, onC
     dataStore.deleteEscrow(escrow.applicationId)
     dataStore.updateUserBalance(user.address, user.balance + escrow.amount)
     onComplete()
+    alert('escrow has been deleted successfully!')
   }
 
   if (escrows.length === 0) {

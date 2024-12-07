@@ -12,7 +12,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+* {
+  box-sizing: border-box;
+}
 a {
   font-weight: 500;
   color: #646cff;
@@ -28,6 +30,8 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background: url('assets/image.png') no-repeat center center fixed;
+  background-size: 35%;
 }
 
 h1 {
@@ -111,4 +115,198 @@ select {
     color: #000000;
     border-color: #f9f9f9;
   }
+}
+.container_3 {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+.container_2 {
+  margin: 30px;
+}
+.wallet-button {
+  min-height: 180px;
+  aspect-ratio: 1;
+  margin: 20px;
+  padding: 0px 20px 0px 20px;
+}
+.container_4 {
+  /* display: flex;
+  flex-direction: row; */
+  height: 250px;
+}
+/* .select_container{
+  width: 200px;
+} */
+.escrow_container {
+  border: white solid 2px;
+  width: 200px;
+  aspect-ratio: 1;
+  /* margin: auto; */
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  transition: all ease-in 0.2s;
+}
+.escrow_container > .text-teal-600 {
+  font-size: 38px;
+}
+.escrow_container:hover {
+  cursor: pointer;
+  background-color: #000000;
+  border: 2px solid #747bff;
+}
+.flex_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 40px;
+}
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #121212;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.escrow-form-container {
+  background-color: #15151c;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  padding: 20px 30px;
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+}
+
+.escrow-form-title {
+  margin-bottom: 20px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.escrow-form-group {
+  margin-bottom: 15px;
+}
+
+.escrow-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #aaaaaa;
+  background-color: #15151c;
+}
+
+.escrow-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 5px;
+  font-size: 14px;
+  background-color: #15151c;
+  color: #ffffff;
+}
+
+.escrow-input:focus {
+  border-color: #4caf50;
+  outline: none;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+.escrow-button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.escrow-submit-button {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid white;
+  color: #ffffff;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+}
+
+.escrow-submit-button:hover {
+  /* background-color: #45a049; */
+  box-shadow: 0 0 10px rgba(52, 168, 56, 0.485);
+
+  /* transform: scale(0.98); */
+}
+
+.escrow-cancel-button {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  /* background-color: #e53935; */
+  border: solid 1px white;
+  color: #ffffff;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+}
+
+.escrow-cancel-button:hover {
+  /* background-color: #d32f2f;
+  transform: scale(1.03); */
+  box-shadow: 0 0 10px rgba(168, 73, 52, 0.485);
+}
+
+.escrow-icon {
+  margin-right: 5px;
+}
+.escrow-item,
+.escrow_details_2 {
+  border: solid 1px rgb(156, 156, 156);
+  margin: 20px;
+  border-radius: 20px;
+  transition: all ease-in-out 0.2s;
+}
+.escrow-item:hover,
+.escrow_details_2:hover {
+  background-color: #070707;
+}
+.escrow-buttons > button,
+.escrow_details_2 > button {
+  margin: 0 10px;
+}
+.app-container {
+  height: 100vh; /* Full screen height */
+  background: url('https://www.liblogo.com/img-logo/al2794af67-algorand-logo-algorand.png') no-repeat center center fixed; /* Change the path to where your AlgoIcon is located */
+  background-size: cover; /* Cover the entire screen */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Add your gradient background for other effects */
+.app-container {
+  background:
+    linear-gradient(to bottom right, rgba(0, 128, 128, 0.6), rgba(0, 0, 0, 0.7)),
+    url('https://www.liblogo.com/img-logo/al2794af67-algorand-logo-algorand.png') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Content inside the container */
+.container {
+  z-index: 10; /* Ensure content stays above the background */
+}
+.wallet_button_new {
+  border: solid 1px white;
+  background-color: rgb(18, 18, 18);
 }

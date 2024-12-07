@@ -27,9 +27,9 @@ const EscrowApp: React.FC<EscrowAppProps> = ({ user }) => {
   return (
     <div className="max-w-6xl mx-auto">
       {currentView === 'main' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="flex_container">
           <div
-            className="bg-white rounded-xl shadow-lg p-8 hover:transform hover:-translate-y-1 transition-all cursor-pointer"
+            className="bg-white rounded-xl shadow-lg p-8 hover:transform hover:-translate-y-1 transition-all cursor-pointer escrow_container"
             onClick={() => setCurrentView('create')}
           >
             <div className="text-teal-600 text-4xl mb-4">+</div>
@@ -38,7 +38,7 @@ const EscrowApp: React.FC<EscrowAppProps> = ({ user }) => {
           </div>
 
           <div
-            className="bg-white rounded-xl shadow-lg p-8 hover:transform hover:-translate-y-1 transition-all cursor-pointer"
+            className="bg-white rounded-xl shadow-lg p-8 hover:transform hover:-translate-y-1 transition-all cursor-pointer escrow_container"
             onClick={() => setCurrentView('list')}
           >
             <div className="text-teal-600 text-4xl mb-4">≡</div>

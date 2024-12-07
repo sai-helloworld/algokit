@@ -23,7 +23,7 @@ export const EscrowDetails: React.FC<EscrowDetailsProps> = ({ escrow, onComplete
   }
 
   return (
-    <div className="form-container">
+    <div className="form-container  escrow_details_2">
       <h3>Escrow Details</h3>
       <p>Application ID: {escrow.applicationId}</p>
       <p>Sender: {escrow.senderAddress}</p>

@@ -19,7 +19,7 @@ function AppContent() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
-            <AlgoIcon className="w-12 h-12" />
+            {/* <AlgoIcon className="w-12 h-12" /> */}
             <h1 className="text-4xl font-bold text-white">Decentralized Escrow Service</h1>
           </div>
           <Connect />
@@ -29,7 +29,7 @@ function AppContent() {
           <EscrowApp user={user} />
         ) : (
           <div className="text-center mt-16">
-            <WalletIcon className="w-24 h-24 mx-auto mb-4 text-white" />
+            {/* <WalletIcon className="w-24 h-24 mx-auto mb-4 text-white" /> */}
             <p className="text-xl text-white">Please connect your wallet to continue</p>
           </div>
         )}

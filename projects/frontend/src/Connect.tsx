@@ -10,9 +10,9 @@ export function Connect() {
   }
 
   return (
-    <div className="flex flex-col items-end gap-4">
-      <div className="flex items-center gap-4">
-        <div className="flex gap-2">
+    <div className="flex flex-col items-end gap-4 container_1">
+      <div className="flex items-center gap-4 container_2">
+        <div className="flex gap-2 container_3">
           {Object.values(NetworkId).map((network) => (
             <button
               key={network}
@@ -31,12 +31,17 @@ export function Connect() {
         {wallets.map((wallet) => (
           <div key={wallet.id} className="flex flex-col items-end gap-2">
             {wallet.isConnected ? (
-              <div className="flex items-center gap-4">
+              <div className="container_4">
+                <button onClick={() => wallet.disconnect()} className="wallet-button text-sm ">
+                  <WalletIcon className="w-4 h-4" />
+                  Disconnect {wallet.metadata.name}
+                </button>
+                <br />
                 {wallet.accounts.length > 0 && (
                   <select
                     onChange={(e) => wallet.setActiveAccount(e.target.value)}
                     value={activeAddress || ''}
-                    className="px-3 py-1 rounded-md bg-white border border-teal-200 text-sm"
+                    className="px-3 py-1 rounded-md bg-white border border-teal-200 text-sm select_container"
                   >
                     {wallet.accounts.map((account) => (
                       <option key={account.address} value={account.address}>
@@ -45,13 +50,9 @@ export function Connect() {
                     ))}
                   </select>
                 )}
-                <button onClick={() => wallet.disconnect()} className="wallet-button text-sm">
-                  <WalletIcon className="w-4 h-4" />
-                  Disconnect {wallet.metadata.name}
-                </button>
               </div>
             ) : (
-              <button onClick={() => wallet.connect()} className="wallet-button text-sm" disabled={wallet.isConnected}>
+              <button onClick={() => wallet.connect()} className="wallet-button text-sm wallet_button_new" disabled={wallet.isConnected}>
                 <WalletIcon className="w-4 h-4" />
                 Connect {wallet.metadata.name}
               </button>
